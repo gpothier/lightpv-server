@@ -1,0 +1,38 @@
+<template name="sales">
+	<div id="sales-pane">
+		<div id="sale-list-container">
+			<table id="sale-list">
+				<tr>
+					<th>Hora</th>
+					<th>Cliente</th>
+					<th>Tienda</th>
+					<th>Usuario</th>
+					<th>Forma pago</th>
+					<th>Total</th>
+				</tr>
+				{{#each sales}}
+				<tr class="sale {{#if registered}}registered{{/if}}">
+					<td class="timestamp">
+						<span>{{formatDate timestamp "long"}}</span>
+					</td>
+					<td class="client">
+						<span>{{clientObj.hostname}}</span>
+					</td>
+					<td class="store">
+						<span>{{storeObj.name}}</span>
+					</td>
+					<td class="user">
+						<span>{{userObj.username}}</span>
+					</td>
+					<td class="paymentMethod">
+						<span>{{paymentMethod}}</span>
+					</td>
+					<td class="price">
+						<span>${{total}}</span>
+					</td>
+				</tr>
+				{{/each}}
+			</table>
+		</div>
+	</div>
+</template>
