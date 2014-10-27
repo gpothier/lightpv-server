@@ -42,8 +42,10 @@ Meteor.startup(function () {
 
 Meteor.methods({
 	registerClientOnServer: function(hostname, password) {
-		if (password != LighTPV.config.serverPassword)
+		if (password != LighTPV.config.serverPassword) {
+			console.log("Password mismatch: "+password+" / "+LighTPV.config.serverPassword);
 			throw new Meteor.Error("Incorrect password");
+		}
 		
 		var clients = Clients.find({hostname: hostname}); 
 		if (clients.count() == 0) {
