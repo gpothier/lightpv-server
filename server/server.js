@@ -11,7 +11,7 @@ Meteor.startup(function () {
 	});
 	
 	Meteor.publish("products", function () {
-		return Products.find();
+		return Products.find({}, {fields: {"marked": 0}});
 	});
 	
 	Meteor.publish("users", function () {

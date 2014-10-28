@@ -24,6 +24,9 @@ function parse(content) {
 		//products = products.slice(0, 20);
 
 		console.log("Updating products...");
+		
+		Products.update({}, { $set: { marked: true } }, { multi: true });
+		
 		products.forEach(function(product) {
 			var id = product["id"][0];
 			var ean13 = product["ean13"][0];
@@ -39,10 +42,19 @@ function parse(content) {
 
 			Products.update(
 				id,
-				{$set: {ean13: ean13, price: price, name: name, image_url: image_url}},
+				{
+					$set: {ean13: ean13, price: price, name: name, image_url: image_url},
+					$unset: { marked: "" }},
 				{upsert: true});
 		});
-		//updateImages();
+
+		var toRemove = Products.find({marked: true}).fetch();
+		console.log("Removing "+toRemove.length+" products");
+		toRemove.forEach(function(product) {
+			console.log("    "+JSON.stringify(product));
+		});
+		Products.remove({marked: true});
+
 		console.log("Done updating products.");
 	}));
 }
