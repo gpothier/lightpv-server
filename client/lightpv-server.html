@@ -3,6 +3,25 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 
+<template name="lightpv-server-layout">
+	<div id="login-pane">
+		<img src="/logo2014.png" />
+		{{> loginButtons}}
+	</div>
+	{{> yield}}
+</template>
+
+<template name="home">
+	{{#if currentUser}}
+		{{> sales}}
+		{{> clientslist}}
+	{{/if}}
+</template>
+
 <template name="loading">
 	<h1>Cargando...</h1>
+</template>
+
+<template name="forbidden">
+	<h1>Forbidden</h1>
 </template>

@@ -2,7 +2,7 @@
 /*
 	Products
 	--------
-	ps_id: prestashop product id
+	(_id: prestashop product id)
 	name: product name
 	ean13: EAN13 code of the product
 	price: product price
@@ -39,8 +39,10 @@ Clients = new Mongo.Collection("clients");
 	serverTimestamp
 	items[]
 		product: product id
+		price: price of the product at the time the order was taken
 		qty
 	discount: discount percentage
+	total: total value of the sale (should match items+discount)
 	slip: number of the sales slip
 	registered: boolean that indicates if the sale has been registered with Prestashop
 */
@@ -48,14 +50,6 @@ Sale = function (doc) {
 	_.extend(this, doc);
 };
 _.extend(Sale.prototype, {
-	total: function () {
-		var total = 0;
-		this.items.forEach(function(item) {
-			if (! item._productObj) item._productObj = Products.findOne(item.product);
-			total += item.qty * item._productObj.price;
-		});
-		return Math.round(total * (100-this.discount)/100);
-	},
 	clientObj: function() {
 		if (! this._clientObj) this._clientObj = Clients.findOne(this.client);
 		return this._clientObj;
@@ -86,13 +80,17 @@ Sales = new Mongo.Collection("sales", {
 Parameters = new Mongo.Collection("parameters");
 
 getParameter = function(name) {
-	var p = Parameters.find({name: name}).fetch();
-	return p.length > 0 ? p[0].value : null;
+	var p = Parameters.findOne({name: name});
+	return p ? p.value : null;
 };
 
 setParameter = function(name, value) {
-	Parameters.update(
-				{name: name},
-				{$set: {value: value}},
-				{upsert: true});
+	if (Meteor.isServer) {
+		Parameters.update(
+					{name: name},
+					{$set: {value: value}},
+					{upsert: true});
+	} else {
+		Meteor.call("setParameter", name, value);
+	}
 };

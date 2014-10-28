@@ -25,6 +25,9 @@ Meteor.startup(function () {
 		return Sales.find();
 	});
 	
+	Meteor.publish("parameters", function() {
+		return Parameters.find();
+	});
 	
 	if (Meteor.users.find().count() === 0) {
 		console.log("Adding initial admin data");
@@ -38,9 +41,39 @@ Meteor.startup(function () {
 	}
 	
 	LighTPV.config.serverPassword = process.env.LIGHTPV_KEY; 
+	
+	setParameter("currentTime", new Date());
+	Meteor.setInterval(function() {
+		setParameter("currentTime", new Date());
+	}, 1*1000);
+	
 });
 
+/*
+ * Checks that a sale is valid.
+ */
+var checkSale = function(clientId, sale) {
+	if (sale.client != clientId) throw new Meteor.Error("Invalid sale ["+sale._id+"]: client mismatch ("+sale.client+" / "+clientId+")");
+	if (! sale.store) throw new Meteor.Error("Invalid sale ["+sale._id+"]: no store");
+	if (! Stores.findOne(sale.store)) throw new Meteor.Error("Invalid sale ["+sale._id+"]: store not found: "+sale.store);
+	
+	var total_ref = 0;
+
+	sale.items.forEach(function(item) {
+		var product = Products.findOne(item.product);
+		var subtotal = item.qty * item.price;
+		total_ref += subtotal;
+	});
+	total_ref = Math.round(total_ref * (100-sale.discount)/100);
+	if (total_ref != sale.total) throw new Meteor.Error("Invalid sale ["+sale._id+"]: totals do not match: "+sale.total+" != "+total_ref);
+};
+
 Meteor.methods({
+	setParameter: function(name, value) {
+		var clientIP = this.connection.clientAddress;		
+		console.log("set parameter: "+clientIP);
+		setParameter(name, value);
+	},
 	registerClientOnServer: function(hostname, password) {
 		if (password != LighTPV.config.serverPassword) {
 			console.log("Password mismatch: "+password+" / "+LighTPV.config.serverPassword);
@@ -89,8 +122,7 @@ Meteor.methods({
 		return Stores.find().fetch();
 	},
 	
-	getProducts: function(clientId, token) {
-		var client = checkClient(clientId, token);
+	getProducts: function() {
 		return Products.find().fetch();
 	},
 	
@@ -98,12 +130,7 @@ Meteor.methods({
 		var client = checkClient(clientId, token);
 		
 		// Sanity check
-		for(var i=0;i<sales.length;i++) {
-			var sale = sales[i];
-			if (sale.client != clientId) throw new Meteor.Error("Invalid sale: client mismatch");
-			if (! sale.store) throw new Meteor.Error("Invalid sale: no store");
-			if (! Stores.findOne(sale.store)) throw new Meteor.Error("Invalid sale: store not found: "+sale.store);
-		}
+		for(var i=0;i<sales.length;i++) checkSale(clientId, sales[i]);
 		
 		// Insert sales
 		var pushedSales = [];

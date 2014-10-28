@@ -1,5 +1,5 @@
-var request = Meteor.npmRequire("request");
 var xml2js = Meteor.npmRequire("xml2js");
+var request = Meteor.npmRequire("request");
 
 var prestashop_key = "XNGDONOUGJJ3MKYX0JX9JBW5LYOM4RRS";
 
@@ -25,7 +25,7 @@ function parse(content) {
 
 		console.log("Updating products...");
 		products.forEach(function(product) {
-			var ps_id = product["id"][0];
+			var id = product["id"][0];
 			var ean13 = product["ean13"][0];
 			var price = product["price"][0];
 			var name = product["name"][0]["language"][0]["_"];
@@ -38,7 +38,7 @@ function parse(content) {
 			}
 
 			Products.update(
-				{ps_id: ps_id},
+				id,
 				{$set: {ean13: ean13, price: price, name: name, image_url: image_url}},
 				{upsert: true});
 		});
@@ -47,33 +47,6 @@ function parse(content) {
 	}));
 }
 
-function updateImages() {
-	Products.find().forEach(function(product) {
-			if (product.image_url) {
-				console.log("Downloading image: " + product.image_url);
-				request.get(product.image_url,
-										{ "auth": {"user": key, "pass": "", "sendImmediately": false } },
-										Meteor.bindEnvironment(function(error, response, body) {
-					if (!error && response.statusCode == 200) {
-						try {
-							console.log("Processing image: " + product.image_url);
-							debugger;
-							var newFile = new FS.File();
-							newFile.name("image");
-							newFile.attachData(body, {type: "image/jpeg"}, function(error) {
-								if (error) throw error;
-								console.log("Image processed: " + product.image_url);
-								var image = Images.insert(newFile);
-								Products.update(product, {$set: {image_id: image._id}});
-							});
-						} catch(e) {
-							console.log(e);
-						}
-					}
-				}));
-			}
-	});
-}
 
 Meteor.startup(function () {
 	download();

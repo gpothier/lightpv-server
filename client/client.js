@@ -1,17 +1,35 @@
+Meteor.startup(function() {
+	Meteor.subscribe("parameters");
+});
+
+Accounts.ui.config({
+	 passwordSignupFields: "USERNAME_ONLY"
+});
+
+filters = {};
+filters.admin = function(pause) {
+	if (! Roles.userIsInRole(Meteor.user(), "admin")) {
+		this.render("forbidden");
+		pause();
+	}
+};	
+
 Router.configure({
-	loadingTemplate: "loading"
+	loadingTemplate: "loading",
+	layoutTemplate: "lightpv-server-layout"	
 });
 
 Router.onBeforeAction(function(pause) {
 	if (!this.ready()) {
 		this.render("loading");
-		pause(); // otherwise the action will just render the main template.
+		pause();
 	}
 });
 
 Router.map(function () {
-	this.route("sales", {
+	this.route("home", {
 		path: "/",
+		onBeforeAction: filters.admin,
 		waitOn: function () {
 			return [Meteor.subscribe("stores"), 
 				Meteor.subscribe("clients"), 

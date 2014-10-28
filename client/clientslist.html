@@ -1,0 +1,23 @@
+<template name="clientslist">
+	<div id="clientslist-pane">
+		<h2>Clientes</h2>
+		<div id="clientslist-list-container">
+			<table id="clientslist-list">
+				<tr>
+					<th>Cliente</th>
+					<th>Última conexión</th>
+				</tr>
+				{{#each clients}}
+				<tr class="sale {{#if registered}}registered{{/if}}">
+					<td class="client">
+						<span>{{hostname}}</span>
+					</td>
+					<td class="timestamp">
+						<span>{{lastConnection}}</span>
+					</td>
+				</tr>
+				{{/each}}
+			</table>
+		</div>
+	</div>
+</template>
