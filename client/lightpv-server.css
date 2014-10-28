@@ -20,12 +20,21 @@ body, html {
   margin-bottom: -1em;
 }
 
+#current-time {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 20em;
+  height: 2em;
+  text-align: right;
+}
+
 #sales-pane {
   position: absolute;
   left: 10em;
   top: 0;
   width: calc(100% - 10em);
-  height: calc(100% - 14em);
+  height: calc(100% - 16em);
   padding: 1em;
 }
 

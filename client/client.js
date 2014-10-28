@@ -16,7 +16,7 @@ filters.admin = function(pause) {
 
 Router.configure({
 	loadingTemplate: "loading",
-	layoutTemplate: "lightpv-server-layout"	
+	layoutTemplate: "lightpvServerLayout"	
 });
 
 Router.onBeforeAction(function(pause) {

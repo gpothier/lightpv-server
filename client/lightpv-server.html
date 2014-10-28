@@ -3,10 +3,13 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 
-<template name="lightpv-server-layout">
+<template name="lightpvServerLayout">
 	<div id="login-pane">
 		<img src="/logo2014.png" />
 		{{> loginButtons}}
+	</div>
+	<div id="current-time">
+		{{formatDate currentTime "long"}}
 	</div>
 	{{> yield}}
 </template>
