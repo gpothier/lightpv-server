@@ -25,9 +25,27 @@ Stores = new Mongo.Collection("stores");
 	hostname
 	token: a security token created the first time a client connects to the server
 	store: store id
+	currentUser: user currently using the client, or null if client closed
+	currentCash: cash currently expected at the client
 	lastActivity: timestamp of the last time the client connected to the server
  */
 Clients = new Mongo.Collection("clients");
+
+/*
+	ClientEvents
+	--------
+	Represents events that occur at a client, such as opening or closing
+	
+	client: client id
+	user: id of the user that generated the event
+	timestamp 
+	event: opening|closing|withdrawal
+	cash: amount of cash of the event
+	comment: a human-generated comment for the event
+	errors[]: problems caused by the creation of this event
+ */
+ClientEvents = new Mongo.Collection("clientEvents");
+
 
 /*
 	Sale

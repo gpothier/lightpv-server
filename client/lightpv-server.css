@@ -29,6 +29,14 @@ body, html {
   text-align: right;
 }
 
+#toolbar-pane {
+  position: absolute;
+  left: 0;
+  top: 10em;
+  width: 10em;
+  height: calc(100% - 10em);
+}
+
 #sales-pane {
   position: absolute;
   left: 10em;
