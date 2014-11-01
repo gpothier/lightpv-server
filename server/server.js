@@ -102,6 +102,7 @@ Meteor.methods({
 		console.log("set parameter: "+clientIP);
 		setParameter(name, value);
 	},
+	
 	registerClientOnServer: function(hostname, password) {
 		if (password != LighTPV.config.serverPassword) {
 			console.log("Password mismatch: "+password+" / "+LighTPV.config.serverPassword);
@@ -162,7 +163,7 @@ Meteor.methods({
 		LighTPV.updateProducts();
 	},
 	
-	push: function(clientId, token, sales, events) {
+	push: function(clientId, token, storeId, sales, events) {
 		var client = checkClient(clientId, token);
 		delete client["_id"];
 		
@@ -268,7 +269,7 @@ Meteor.methods({
 			console.log("Error while inserting sales: "+e);
 		}
 		
-		Clients.update(clientId, {$set: {lastActivity: ts}});
+		Clients.update(clientId, {$set: {lastActivity: ts, store: storeId}});
 			
 		return {sales: pushedSales, events: pushedEvents};
 	}

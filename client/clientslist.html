@@ -9,11 +9,14 @@
 				<div class="name">
 					{{hostname}}
 				</div>
+				<div class="store">
+					Tienda: {{storeObj.name}}
+				</div>
 				<div class="timestamp">
 					Última conexión: {{lastConnection}}
 				</div>
 				<div class="user">
-					Abierto por: {{currentUser}}
+					Abierto por: {{currentUserObj.username}}
 				</div>
 				<div class="cash">
 					Efectivo en caja: ${{currentCash}}

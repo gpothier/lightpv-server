@@ -29,7 +29,23 @@ Stores = new Mongo.Collection("stores");
 	currentCash: cash currently expected at the client
 	lastActivity: timestamp of the last time the client connected to the server
  */
-Clients = new Mongo.Collection("clients");
+Client = function (doc) {
+	_.extend(this, doc);
+};
+_.extend(Client.prototype, {
+	storeObj: function() {
+		if (! this._storeObj) this._storeObj = Stores.findOne(this.store);
+		return this._storeObj;
+	},
+	currentUserObj: function() {
+		if (! this._currentUserObj) this._currentUserObj = Meteor.users.findOne(this.currentUser);
+		return this._currentUserObj;
+	}
+});
+
+Clients = new Mongo.Collection("clients", {
+	transform: function (doc) { return new Client(doc); }
+});
 
 /*
 	ClientEvents
