@@ -9,7 +9,7 @@ Meteor.startup(function() {
 				since = new Date();
 				since.setHours(0, 0, 0, 0);
 				until = new Date(since);
-				since.setHours(23, 59, 59, 999);
+				until.setHours(23, 59, 59, 999);
 			} else if (dateRange.value == "thisMonth") {
 				since = new Date();
 				since.setHours(0, 0, 0, 0);
@@ -17,7 +17,7 @@ Meteor.startup(function() {
 				until = new Date(since);
 				until.setMonth(until.getMonth()+1);
 				until.setDate(0);
-				since.setHours(23, 59, 59, 999);
+				until.setHours(23, 59, 59, 999);
 			}
 			
 			console.log("Since: "+since+", until: "+until);
