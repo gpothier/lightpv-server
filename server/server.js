@@ -22,15 +22,26 @@ Meteor.startup(function () {
 		return Meteor.users.find({}, {fields: {"username": 1}});
 	});
 	
-	Meteor.publish("sales", function (date) {
-		//if (! date) return null;
-		//date.setHours(0, 0, 0, 0);
-		//return Sales.find({user: this.userId, timestamp: {$gte: date}});
-		return Sales.find();
+	Meteor.publish("sales", function (since, until, userId, clientId, storeId, paymentMethod) {
+		var query = {};
+		if (userId) query.user = userId;
+		if (clientId) query.client = clientId;
+		if (storeId) query.store = storeId;
+		if (paymentMethod) query.paymentMethod = paymentMethod;
+		if (since || until) {
+			query.timestamp = {};
+			if (since) query.timestamp["$gte"] = since;
+			if (until) query.timestamp["$lte"] = until;
+		}
+		return Sales.find(query);
 	});
 	
 	Meteor.publish("parameters", function() {
 		return Parameters.find();
+	});
+	
+	Meteor.publish("events", function() {
+		return ClientEvents.find();
 	});
 	
 	if (Meteor.users.find().count() === 0) {
@@ -42,6 +53,11 @@ Meteor.startup(function () {
 			admin: true,
 			profile: {name:"Administrator"}});
 		Roles.addUsersToRoles(id, ["admin", "manage-users"]);
+	}
+	
+	if (Stores.find().count() === 0) {
+		console.log("Adding initial stores");
+		Stores.insert({ "_id" : "dummy", "name" : "Dummy for testing", "users" : [ ] });
 	}
 	
 	LighTPV.config.serverPassword = process.env.LIGHTPV_KEY; 
@@ -71,6 +87,13 @@ var checkSale = function(clientId, sale) {
 	});
 	total_ref = Math.round(total_ref * (100-sale.discount)/100);
 	if (total_ref != sale.total) throw new Meteor.Error("Invalid sale ["+sale._id+"]: totals do not match: "+sale.total+" != "+total_ref);
+};
+
+/*
+ * Checks that a ClientEvent is valid.
+ */
+var checkEvent = function(clientId, event) {
+	if (event.clientId != clientId) throw new Meteor.Error("Invalid event ["+event._id+"]: client mismatch ("+event.client+" / "+clientId+")");
 };
 
 Meteor.methods({
@@ -139,35 +162,115 @@ Meteor.methods({
 		LighTPV.updateProducts();
 	},
 	
-	pushSales: function(clientId, token, sales) {
+	push: function(clientId, token, sales, events) {
 		var client = checkClient(clientId, token);
+		delete client["_id"];
 		
 		// Sanity check
 		for(var i=0;i<sales.length;i++) checkSale(clientId, sales[i]);
+		for(var i=0;i<events.length;i++) checkEvent(clientId, events[i]);
 		
-		// Insert sales
+		// Process sales and events in timestamp order
+		var ts = new Date();
 		var pushedSales = [];
+		var pushedEvents = [];
 		
 		try {
-			var ts = new Date();
+			var saleIndex = 0;
+			var eventIndex = 0;
 			
-			Clients.update(client, {$set: {lastActivity: ts}});
+			// Helper functions to retrieve sales and events in timestamp order
+			function popSale() {
+				return {type: "sale", value: sales[saleIndex++]};
+			}
+			
+			function popEvent() {
+				return {type: "event", value: events[eventIndex++]};
+			}
+			
+			function popItem() {
+				var nextSale = saleIndex < sales.length ? sales[saleIndex] : null;
+				var nextEvent = eventIndex < events.length ? events[eventIndex] : null;
 
-			for(var i=0;i<sales.length;i++) {
-				var sale = sales[i];
+				if (! nextSale && ! nextEvent) return null;
+				if (! nextEvent) return popSale();
+				if (! nextSale) return popEvent();
 				
+				if (nextSale.timestamp < nextEvent.timestamp) return popSale(); 
+				else return popEvent();
+			}
+			
+			// Process sale
+			function pushSale(sale) {
 				console.log("Adding sale: "+JSON.stringify(sale));
 				
 				sale.serverTimestamp = ts;
 				Sales.insert(sale);
 				
+				if (sale.paymentMethod == "cash") {
+					client.currentCash += sale.total;
+					Clients.update(clientId, {$set: {currentCash: client.currentCash}});
+					console.log("    New client state: "+JSON.stringify(client));
+				}
+				
 				pushedSales.push(sale._id);
 			}
+			
+			// Process event
+			function pushEvent(event) {
+				console.log("Adding event: "+JSON.stringify(event));
+				
+				event.serverTimestamp = ts;
+				
+				var errors = [];
+				
+				if (event.event == "opening") {
+					if (client.currentUser) errors.push("Client already open by "+client.currentUser);
+					if (client.currentCash != event.cash) errors.push("Cash mismatch on open: current: "+client.currentCash+", new: "+event.cash);
+					
+					client.currentUser = event.userId;
+					client.currentCash = event.cash;
+				} else if (event.event == "closing") {
+					if (client.currentUser == event.userId) client.currentUser = null;
+					else errors.push("Client not open by "+event.userId+" but by "+client.currentUser+"; not closing");
+					
+					if (client.currentCash != event.cash) errors.push("Cash mismatch on close: current: "+client.currentCash+", new: "+event.cash);
+					client.currentCash = event.cash;
+				} else if (event.event == "withdrawal") {
+					if (client.currentUser != event.userId) errors.push("Sending withdrawal by "+event.userId+", but client opened by "+client.currentUser);
+					client.currentCash -= event.cash;
+				} else throw new Meteor.Error("INTERNAL ERROR: wrong event type: "+JSON.stringify(event));
+				
+				if (errors.length > 0) {
+					event.errors = errors;
+					console.log("    Event errors: "+JSON.stringify(errors));
+				}
+				Clients.update(clientId, {$set: {currentUser: client.currentUser, currentCash: client.currentCash}});
+				ClientEvents.insert(event);
+				
+				console.log("    New client state("+clientId+"): "+JSON.stringify(client));
+				
+				pushedEvents.push(event._id);
+			}
+			
+			// Processing loop
+			while(true) {
+				var item = popItem();
+				if (! item) break;
+				
+				if (item.type == "sale") pushSale(item.value);
+				else if (item.type = "event") pushEvent(item.value);
+				else throw new Meteor.Error("INTERNAL ERROR: wrong item type: "+JSON.stringify(item)); 
+			}			
+			
+			
 		} catch(e) {
 			console.log("Error while inserting sales: "+e);
 		}
 		
-		return pushedSales;
+		Clients.update(clientId, {$set: {lastActivity: ts}});
+			
+		return {sales: pushedSales, events: pushedEvents};
 	}
 });
 

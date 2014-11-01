@@ -1,15 +1,53 @@
 <template name="sales">
 	<div id="sales-pane">
-		<h2>Ventas</h2>
-		<div id="sales-list-container">
-			<table id="sale-list">
+		<div class="header">
+			<h2>Ventas</h2>
+			${{filterTotal}}
+		</div>
+		<div class="container">
+			<table class="list">
 				<tr>
-					<th>Hora</th>
-					<th>Cliente</th>
-					<th>Tienda</th>
-					<th>Usuario</th>
-					<th>Forma pago</th>
-					<th>Total</th>
+					<th>
+						Hora<br/>
+						<select data-bind="options: dateRanges, 
+							optionsText: 'name',
+							optionsCaption: 'Todos',
+							value: dateRange"></select>
+					</th>
+					<th>
+						Cliente<br/>
+						<select data-bind="options: clients, 
+							optionsText: 'hostname',
+							optionsCaption: 'Todos',
+							optionsValue: '_id',
+							value: client"></select>
+							
+					</th>
+					<th>
+						Tienda<br/>
+						<select data-bind="options: stores, 
+							optionsText: 'name',
+							optionsCaption: 'Todos',
+							optionsValue: '_id',
+							value: store"></select>
+					</th>
+					<th>
+						Usuario<br/>
+						<select data-bind="options: users, 
+							optionsText: 'username',
+							optionsCaption: 'Todos',
+							optionsValue: '_id',
+							value: user"></select>
+					</th>
+					<th>
+						Forma pago<br/>
+						<select data-bind="options: paymentMethods, 
+							optionsCaption: 'Todos',
+							value: paymentMethod"></select>
+					</th>
+					<th>
+						Total
+					</th>
 				</tr>
 				{{#each sales}}
 				<tr class="sale {{#if registered}}registered{{/if}}">

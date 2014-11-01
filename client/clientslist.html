@@ -1,11 +1,13 @@
 <template name="clientslist">
 	<div id="clientslist-pane">
 		<h2>Clientes</h2>
-		<div id="clientslist-list-container">
-			<table id="clientslist-list">
+		<div class="container">
+			<table class="list">
 				<tr>
 					<th>Cliente</th>
 					<th>Última conexión</th>
+					<th>Usuario</th>
+					<th>Efectivo</th>
 				</tr>
 				{{#each clients}}
 				<tr class="sale {{#if registered}}registered{{/if}}">
@@ -14,6 +16,12 @@
 					</td>
 					<td class="timestamp">
 						<span>{{lastConnection}}</span>
+					</td>
+					<td class="user">
+						<span>{{currentUser}}</span>
+					</td>
+					<td class="cash">
+						<span>${{currentCash}}</span>
 					</td>
 				</tr>
 				{{/each}}
