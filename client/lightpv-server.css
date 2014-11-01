@@ -41,7 +41,7 @@ body, html {
   position: absolute;
   left: 10em;
   top: 0;
-  width: calc(100% - 30em);
+  width: calc(100% - 32em);
   height: 50%;
   padding: 1em;
 }
@@ -71,11 +71,23 @@ body, html {
   overflow-y: auto;
 }
 
+#clientslist-pane .client {
+	background-color: #BDBDBD;
+	border-radius: 0.5em;
+	margin: 0.5em;
+	padding: 0.5em;
+}
+
+#clientslist-pane .client .name {
+	font-weight: bold;
+	margin-bottom: 0.5em;
+}
+
 #eventslist-pane {
   position: absolute;
   left: 10em;
   bottom: 0;
-  width: calc(100% - 30em);
+  width: calc(100% - 32em);
   height: 50%;
   padding: 1em;
 }

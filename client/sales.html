@@ -14,6 +14,7 @@
 							optionsCaption: 'Todos',
 							value: dateRange"></select>
 					</th>
+					<!--
 					<th>
 						Cliente<br/>
 						<select data-bind="options: clients, 
@@ -23,6 +24,7 @@
 							value: client"></select>
 							
 					</th>
+					-->
 					<th>
 						Tienda<br/>
 						<select data-bind="options: stores, 
@@ -54,9 +56,11 @@
 					<td class="timestamp">
 						<span>{{formatDate timestamp "long"}}</span>
 					</td>
+					<!--
 					<td class="client">
 						<span>{{clientObj.hostname}}</span>
 					</td>
+					-->
 					<td class="store">
 						<span>{{storeObj.name}}</span>
 					</td>
