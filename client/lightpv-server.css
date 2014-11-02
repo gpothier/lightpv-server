@@ -57,6 +57,18 @@ body, html {
   overflow-y: auto;
 }
 
+#sales-pane .list {
+	width: 100%;
+}
+
+#sales-pane tr.sale {
+	cursor: pointer;
+}
+
+#sales-pane tr.sale:hover {
+	background-color: #F5EFFB;
+}
+
 #clientslist-pane {
   position: absolute;
   right: 0;

@@ -5,9 +5,13 @@ var DateFormats = {
 	long: "DD/MM/YYYY HH:mm:ss"
 };
 
-UI.registerHelper("formatDate", function(datetime, format) {
-	f = DateFormats[format];
+formatDate = function(datetime, format) {
+	f = DateFormats[format ? format : "long"];
 	return moment(datetime).format(f);
+};
+
+UI.registerHelper("formatDate", function(datetime, format) {
+	return formatDate(datetime, format)
 });
 
 

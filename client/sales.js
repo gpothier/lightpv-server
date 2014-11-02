@@ -33,18 +33,15 @@ Meteor.startup(function() {
 	});
 });
 
-Template.sales.helpers({
-	sales: function () {
-		return Sales.find({}, {sort: {timestamp: -1}});
-	},
-	filterTotal: function() {
+function SalesViewModel() {
+	this.sales = mko.collectionObservable(Sales, {}, {sort: {timestamp: -1}});
+	
+	this.filterTotal = ko.computed(function() {
 		var total = 0;
-		Sales.find({}).forEach(function(sale) { total += sale.total;});
+		this.sales().forEach(function(sale) { total += sale.total;});
 		return total;
-	}
-});
-
-function SalesFilterModel() {
+	}.bind(this));
+	
 	this.dateRanges = [{name: "Today", value: "today"}, 
 		{name: "This month", value: "thisMonth"}];
 	this.dateRange = mko.sessionObservable("salesfilter_dateRange");
@@ -60,9 +57,44 @@ function SalesFilterModel() {
 	
 	this.paymentMethods = ["card", "cash"];
 	this.paymentMethod = mko.sessionObservable("salesfilter_paymentMethod");
+	
+	this.showDetails = function(sale) {
+		showSaleDetails(sale);
+	}.bind(this);
 }
 
 Template.sales.rendered = function() {
-	var view = new SalesFilterModel();
+	var view = new SalesViewModel();
 	ko.applyBindings(view, $("#sales-pane")[0]);
 };
+
+
+// Show sale details
+showSaleDetails = function(sale) {
+	saleDetailDialogViewModel.sale(sale);
+	AntiModals.overlay("saleDetail", {
+		modal: true,
+	});
+};
+
+function SaleDetailDialogViewModel() {
+	this.sale = ko.observable();
+	
+	this.items = ko.computed(function() {
+		if (! this.sale()) return [];
+		return this.sale().items;
+	}.bind(this));
+	
+	this.close = function() {
+        AntiModals.dismissOverlay($("#sale-detail-dialog"), null, null);
+	}.bind(this);
+}
+
+Meteor.startup(function() {
+	saleDetailDialogViewModel = new SaleDetailDialogViewModel();
+	
+	Template.saleDetail.rendered = function() {
+		ko.applyBindings(saleDetailDialogViewModel, $("#sale-detail-dialog")[0]);
+	};
+});	
+
