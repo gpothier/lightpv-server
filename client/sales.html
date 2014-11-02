@@ -89,9 +89,6 @@
 				<span class="anti-modal-title">Detalle venta</span>
 			</div>
 			
-			<div>
-				Total: $<span data-bind="text: sale().total"></span>
-			</div>
 			<table>
 				<thead>
 					<tr>
@@ -114,6 +111,16 @@
 						</td>
 						<td>
 							$<span data-bind="text: price*qty"></span>
+						</td>
+					</tr>
+				</tbody>
+				<tbody>
+					<tr>
+						<td></td>
+						<td></td>
+						<td>Total:</td>
+						<td>
+							$<span data-bind="text: sale().total"></span>
 						</td>
 					</tr>
 				</tbody>
