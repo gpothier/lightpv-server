@@ -225,18 +225,24 @@ Meteor.methods({
 				
 				var errors = [];
 				
+				if (! client.accumulatedCashDelta) client.accumulatedCashDelta = 0;
+				
 				if (event.event == "opening") {
 					if (client.currentUser) errors.push("Client already open by "+client.currentUser);
-					if (client.currentCash != event.cash) errors.push("Cash mismatch on open: current: "+client.currentCash+", new: "+event.cash);
+					var cashDelta = event.cash - client.currentCash;
+					if (cashDelta != 0) errors.push("Cash mismatch on open: current: "+client.currentCash+", new: "+event.cash);
 					
 					client.currentUser = event.userId;
 					client.currentCash = event.cash;
+					client.accumulatedCashDelta += cashDelta;
 				} else if (event.event == "closing") {
 					if (client.currentUser == event.userId) client.currentUser = null;
 					else errors.push("Client not open by "+event.userId+" but by "+client.currentUser+"; not closing");
 					
-					if (client.currentCash != event.cash) errors.push("Cash mismatch on close: current: "+client.currentCash+", new: "+event.cash);
+					var cashDelta = event.cash - client.currentCash;
+					if (cashDelta != 0) errors.push("Cash mismatch on close: current: "+client.currentCash+", new: "+event.cash);
 					client.currentCash = event.cash;
+					client.accumulatedCashDelta += cashDelta;
 				} else if (event.event == "withdrawal") {
 					if (client.currentUser != event.userId) errors.push("Sending withdrawal by "+event.userId+", but client opened by "+client.currentUser);
 					client.currentCash -= event.cash;
@@ -246,7 +252,10 @@ Meteor.methods({
 					event.errors = errors;
 					console.log("    Event errors: "+JSON.stringify(errors));
 				}
-				Clients.update(clientId, {$set: {currentUser: client.currentUser, currentCash: client.currentCash}});
+				Clients.update(clientId, {$set: {
+					currentUser: client.currentUser, 
+					currentCash: client.currentCash,
+					accumulatedCashDelta: client.accumulatedCashDelta}});
 				ClientEvents.insert(event);
 				
 				console.log("    New client state("+clientId+"): "+JSON.stringify(client));

@@ -27,6 +27,7 @@ Stores = new Mongo.Collection("stores");
 	store: store id
 	currentUser: user currently using the client, or null if client closed
 	currentCash: cash currently expected at the client
+	accumulatedCashDelta: sum of cash differences
 	lastActivity: timestamp of the last time the client connected to the server
  */
 Client = function (doc) {

@@ -5,7 +5,7 @@
 		</div>
 		<div class="container">
 			{{#each clients}}
-			<div class="client">
+			<div class="client {{#if currentUserObj}}open{{/if}}">
 				<div class="name">
 					{{hostname}}
 				</div>
@@ -16,10 +16,17 @@
 					Última conexión: {{lastConnection}}
 				</div>
 				<div class="user">
-					Abierto por: {{currentUserObj.username}}
+					{{#if currentUserObj}}
+						Abierto por: {{currentUserObj.username}}
+					{{else}}
+						Cerrado
+					{{/if}}
 				</div>
 				<div class="cash">
 					Efectivo en caja: ${{currentCash}}
+				</div>
+				<div class="cash">
+					Diferencia acumulada: ${{accumulatedCashDelta}}
 				</div>
 			</div>
 			{{/each}}

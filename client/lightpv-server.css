@@ -84,11 +84,16 @@ body, html {
 }
 
 #clientslist-pane .client {
-	background-color: #BDBDBD;
+	background-color: #F6D8CE;
 	border-radius: 0.5em;
 	margin: 0.5em;
 	padding: 0.5em;
 }
+
+#clientslist-pane .client.open {
+	background-color: #E0F8EC;
+}
+
 
 #clientslist-pane .client .name {
 	font-weight: bold;
