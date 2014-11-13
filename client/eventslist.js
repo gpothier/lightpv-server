@@ -4,8 +4,6 @@ Meteor.startup(function() {
 
 Template.eventslist.helpers({
 	events: function() {
-		return ClientEvents.find(
-			{errors: {$exists: true, $not: {$size: 0}}},
-			{sort: {timestamp: -1}});
+		return ClientEvents.find({}, {sort: {timestamp: -1}});
 	}
 });
