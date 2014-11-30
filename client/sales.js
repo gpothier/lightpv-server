@@ -1,31 +1,10 @@
 Meteor.startup(function() {
+	Session.set("salesfilter_date", [null, null]);
+	
 	Meteor.autorun(function() {
-		var since = null;
-		var until = null;
-		
-		var dateRange = Session.get("salesfilter_dateRange");
-		if (dateRange) {
-			if (dateRange.value == "today") {
-				since = new Date();
-				since.setHours(0, 0, 0, 0);
-				until = new Date(since);
-				until.setHours(23, 59, 59, 999);
-			} else if (dateRange.value == "thisMonth") {
-				since = new Date();
-				since.setHours(0, 0, 0, 0);
-				since.setDate(1);
-				until = new Date(since);
-				until.setMonth(until.getMonth()+1);
-				until.setDate(0);
-				until.setHours(23, 59, 59, 999);
-			}
-			
-			console.log("Since: "+since+", until: "+until);
-		}
-		
 		Meteor.subscribe("sales",
-			since,
-			until, 
+			Session.get("salesfilter_date")[0],
+			Session.get("salesfilter_date")[1], 
 			Session.get("salesfilter_userId"), 
 			Session.get("salesfilter_clientId"), 
 			Session.get("salesfilter_storeId"), 
@@ -42,9 +21,39 @@ function SalesViewModel() {
 		return total;
 	}.bind(this));
 	
-	this.dateRanges = [{name: "Today", value: "today"}, 
-		{name: "This month", value: "thisMonth"}];
-	this.dateRange = mko.sessionObservable("salesfilter_dateRange");
+	this.dateRanges = [
+		{name: "Today", value: "today"}, 
+		{name: "This month", value: "thisMonth"},
+		{name: "Range", value: "range"}];
+	this.dateRange = ko.observable();
+	
+	this._dateRangeListener = ko.computed(function() {
+		var since = null;
+		var until = null;
+		var dateRange = this.dateRange();
+		
+		if (dateRange) {
+			if (dateRange.value == "today") {
+				since = new Date();
+				since.setHours(0, 0, 0, 0);
+				until = new Date(since);
+				until.setHours(23, 59, 59, 999);
+			} else if (dateRange.value == "thisMonth") {
+				since = new Date();
+				since.setHours(0, 0, 0, 0);
+				since.setDate(1);
+				until = new Date(since);
+				until.setMonth(until.getMonth()+1);
+				until.setDate(0);
+				until.setHours(23, 59, 59, 999);
+			} else if (dateRange.value == "range") {
+				selectDateRangeDialog();
+			}
+		}
+		
+		console.log("Since: "+since+", until: "+until);
+		Session.set("salesfilter_date", [since, until]); 
+	}.bind(this));
 
 	this.users = mko.collectionObservable(Meteor.users, {});
 	this.user = mko.sessionObservable("salesfilter_userId");
@@ -95,6 +104,49 @@ Meteor.startup(function() {
 	
 	Template.saleDetail.rendered = function() {
 		ko.applyBindings(saleDetailDialogViewModel, $("#sale-detail-dialog")[0]);
+	};
+});	
+
+// Select date range
+selectDateRangeDialog = function() {
+	selectDateRangeDialogViewModel.since(null);
+	selectDateRangeDialogViewModel.until(null);
+	
+	AntiModals.overlay("selectDateRange", {
+		modal: true,
+	});
+};
+
+function SelectDateRangeDialogViewModel() {
+	this.since = ko.observable();
+	this.until = ko.observable();
+	
+	this.canConfirm = ko.computed(function() {
+		var since = moment(this.since(), "YYYY-MM-DD");
+		var until = moment(this.until(), "YYYY-MM-DD");
+		return since.isValid() && until.isValid();
+	}.bind(this));
+	
+	this.confirm = function() {
+		var since = moment(this.since(), "YYYY-MM-DD").toDate();
+		var until = moment(this.until(), "YYYY-MM-DD").toDate();
+		since.setHours(0, 0, 0, 0);
+		until.setHours(23, 59, 59, 999);
+
+		Session.set("salesfilter_date", [since, until]);
+		AntiModals.dismissOverlay($("#select-date-range-dialog"), null, null); 
+	}.bind(this);
+	
+	this.cancel = function() {
+        AntiModals.dismissOverlay($("#select-date-range-dialog"), null, null);
+	}.bind(this);
+}
+
+Meteor.startup(function() {
+	selectDateRangeDialogViewModel = new SelectDateRangeDialogViewModel();
+	
+	Template.selectDateRange.rendered = function() {
+		ko.applyBindings(selectDateRangeDialogViewModel, $("#select-date-range-dialog")[0]);
 	};
 });	
 

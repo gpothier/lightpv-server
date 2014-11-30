@@ -41,9 +41,8 @@ body, html {
   position: absolute;
   left: 10em;
   top: 0;
-  width: calc(100% - 32em);
+  width: calc(100% - 30em);
   height: calc(50% - 1em);
-  padding: 1em;
 }
 
 #sales-pane .header {
@@ -104,9 +103,8 @@ body, html {
   position: absolute;
   left: 10em;
   bottom: 0;
-  width: calc(100% - 32em);
+  width: calc(100% - 30em);
   height: calc(50% - 1em);
-  padding: 1em;
 }
 
 #eventslist-pane .header {

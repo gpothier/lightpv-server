@@ -1,0 +1,27 @@
+<template name="selectDateRange">
+	<div id="select-date-range-dialog">
+	<div class="anti-modal-box">
+		<div class="anti-modal-body">
+			<div class="anti-modal-header">
+				<span class="anti-modal-title">Rango de fechas</span>
+			</div>
+			
+			<br/>
+			
+			<div>
+				Inicio: <input data-bind="textInput: since"/>
+			</div>
+			<div>
+				Fin: <input data-bind="textInput: until"/>
+			</div>
+			
+			<br/>
+			
+			<div class="anti-modal-footer">
+				<button data-bind="click: cancel" class="anti-modal-button anti-modal-button-cancel">Anular</button>
+				<button data-bind="click: confirm, enable: canConfirm" class="anti-modal-button anti-modal-button-action">Confirmar</button>
+			</div>
+		</div>
+	</div>
+	</div>
+</template>
