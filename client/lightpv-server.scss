@@ -142,9 +142,9 @@ $tab-label-height:3em;
 
 .tab-body {
 	position:absolute;
-	top:-9999px;
-	opacity:1;
-	padding:10px;
+	display: none;
+	opacity: 1;
+	padding: 10px;
 }
 
 .tab-body-wrapper {
@@ -165,5 +165,6 @@ $tab-label-height:3em;
 #tab2:checked ~ .tab-body-wrapper #tab-body-2, 
 #tab3:checked ~ .tab-body-wrapper #tab-body-3 {
 	position:relative;
-	top:0px;
+	top: 0;
+	display: block;
 }
