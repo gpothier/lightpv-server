@@ -12,6 +12,8 @@ filters.admin = function(pause) {
 	if (! Roles.userIsInRole(Meteor.user(), "admin")) {
 		this.render("forbidden");
 		pause();
+	} else {
+		this.next();
 	}
 };	
 
@@ -24,6 +26,8 @@ Router.onBeforeAction(function(pause) {
 	if (!this.ready()) {
 		this.render("loading");
 		pause();
+	} else {
+		this.next();
 	}
 });
 
