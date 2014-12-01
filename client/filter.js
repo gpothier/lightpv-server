@@ -26,6 +26,7 @@ function FilterViewModel() {
 				until.setHours(23, 59, 59, 999);
 			} else if (dateRange.value == "range") {
 				selectDateRangeDialog();
+				return;
 			}
 		}
 		
