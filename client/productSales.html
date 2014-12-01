@@ -11,7 +11,9 @@
 				<tbody data-bind="foreach: productSales">
 					<tr>
 						<td>
-							<span data-bind="text: Products.findOne(product).name"></span>
+							<!-- ko with: Products.findOne(product) -->
+							<span data-bind="text: $data ? $data.name : product"></span>
+							<!-- /ko -->
 						</td>
 						<td>
 							<span data-bind="text: qty"></span>
