@@ -6,6 +6,7 @@
 					<tr>
 						<th>Producto</th>
 						<th>Cantidad</th>
+						<th>Valor</th>
 					</tr>
 				</thead>
 				<tbody data-bind="foreach: productSales">
@@ -17,6 +18,9 @@
 						</td>
 						<td>
 							<span data-bind="text: qty"></span>
+						</td>
+						<td>
+							$<span data-bind="text: total"></span>
 						</td>
 					</tr>
 				</tbody>

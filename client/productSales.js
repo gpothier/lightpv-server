@@ -11,11 +11,12 @@ function ProductSalesViewModel() {
 			sale.items.forEach(function(item) {
 				var t = productsMap[item.product];
 				if (! t) {
-					t = {"product": item.product, "qty": 0};
+					t = {"product": item.product, "qty": 0, "total": 0};
 					productsMap[item.product] = t;
 					productSales.push(t);
 				}
 				t["qty"] += item.qty;
+				t["total"] += item.qty*item.price;
 			});
 		});
 		
