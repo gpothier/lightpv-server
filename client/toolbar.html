@@ -1,8 +1,17 @@
 <template name="toolbar">
 	<div id="toolbar-pane">
+		<div id="login-pane">
+			<img src="/logo2014.png" />
+			{{> loginButtons}}
+		</div>
+		<div id="current-time">
+			{{formatDate currentTime "long"}}
+		</div>
+		
 		<div>
 			Catalog version: {{catalogVersion}}<br/>
 			<button id="update-catalog">Force update</button>
 		</div>
+		{{> clientslist}}
 	</div>
 </template>

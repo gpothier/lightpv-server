@@ -1,0 +1,37 @@
+<template name="filter">
+	<div id="filter-pane">
+	<table>
+		<tr>
+			<th>
+				Hora<br/>
+				<select data-bind="options: dateRanges, 
+					optionsText: 'name',
+					optionsCaption: 'Todos',
+					value: dateRange"></select>
+			</th>
+			<th>
+				Tienda<br/>
+				<select data-bind="options: stores, 
+					optionsText: 'name',
+					optionsCaption: 'Todos',
+					optionsValue: '_id',
+					value: store"></select>
+			</th>
+			<th>
+				Usuario<br/>
+				<select data-bind="options: users, 
+					optionsText: 'username',
+					optionsCaption: 'Todos',
+					optionsValue: '_id',
+					value: user"></select>
+			</th>
+			<th>
+				Forma pago<br/>
+				<select data-bind="options: paymentMethods, 
+					optionsCaption: 'Todos',
+					value: paymentMethod"></select>
+			</th>
+		</tr>
+	</table>
+	</div>
+</template>

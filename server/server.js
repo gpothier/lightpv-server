@@ -40,8 +40,14 @@ Meteor.startup(function () {
 		return Parameters.find();
 	});
 	
-	Meteor.publish("events", function() {
-		return ClientEvents.find();
+	Meteor.publish("events", function(since, until) {
+		var query = {};
+		if (since || until) {
+			query.timestamp = {};
+			if (since) query.timestamp["$gte"] = since;
+			if (until) query.timestamp["$lte"] = until;
+		}
+		return ClientEvents.find(query);
 	});
 	
 	if (Meteor.users.find().count() === 0) {

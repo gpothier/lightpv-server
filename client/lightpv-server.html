@@ -4,22 +4,33 @@
 </head>
 
 <template name="lightpvServerLayout">
-	<div id="login-pane">
-		<img src="/logo2014.png" />
-		{{> loginButtons}}
-	</div>
-	<div id="current-time">
-		{{formatDate currentTime "long"}}
-	</div>
 	{{> yield}}
 </template>
 
 <template name="home">
 	{{#if currentUser}}
 		{{> toolbar}}
-		{{> sales}}
-		{{> clientslist}}
-		{{> eventslist}}
+		{{> filter}}
+		<div class="tabs-wrapper">
+			<input type="radio" name="tab" id="tab1" class="tab-head" checked="checked"/>
+			<label for="tab1">Sales</label>
+			<input type="radio" name="tab" id="tab2" class="tab-head" />
+			<label for="tab2">Products</label>
+			<input type="radio" name="tab" id="tab3" class="tab-head" />
+			<label for="tab3">Events</label>
+			
+			<div class="tab-body-wrapper">
+				<div id="tab-body-1" class="tab-body">
+					{{> sales}}
+				</div>
+				<div id="tab-body-2" class="tab-body">
+					{{> productSales}}
+				</div>
+				<div id="tab-body-3" class="tab-body">
+					{{> eventslist}}
+				</div>
+			</div>
+		</div>
 	{{/if}}
 </template>
 
