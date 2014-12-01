@@ -3,7 +3,7 @@ function FilterViewModel() {
 		{name: "Today", value: "today"}, 
 		{name: "This month", value: "thisMonth"},
 		{name: "Range", value: "range"}];
-	this.dateRange = ko.observable("today");
+	this.dateRange = ko.observable(this.dateRanges[0]);
 	
 	this._dateRangeListener = ko.computed(function() {
 		var since = null;
