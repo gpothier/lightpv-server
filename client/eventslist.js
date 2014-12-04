@@ -1,8 +1,8 @@
 Meteor.startup(function() {
 	Meteor.autorun(function() {
 		Meteor.subscribe("events", 
-			Session.get("salesfilter_date")[0],
-			Session.get("salesfilter_date")[1]);
+			Session.get("filter_date")[0],
+			Session.get("filter_date")[1]);
 	});
 });
 
