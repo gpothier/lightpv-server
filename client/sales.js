@@ -1,10 +1,10 @@
 Meteor.startup(function() {
 	Meteor.autorun(function() {
-		if (! Session.get("filter_date")) return;
+		var filter_date = Session.get("filter_date");
 		
-		Meteor.subscribe("sales",
-			Session.get("filter_date")[0],
-			Session.get("filter_date")[1], 
+		if (filter_date) Meteor.subscribe("sales",
+			filter_date[0],
+			filter_date[1], 
 			Session.get("filter_userId"), 
 			Session.get("filter_clientId"), 
 			Session.get("filter_storeId"), 

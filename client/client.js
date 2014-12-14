@@ -1,6 +1,5 @@
 Meteor.startup(function() {
 	Meteor.subscribe("parameters");
-	Session.set("filter_date", [null, null]);	
 });
 
 Accounts.ui.config({

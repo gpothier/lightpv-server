@@ -143,16 +143,15 @@ $tab-label-height:3em;
 .tab-body {
 	position:absolute;
 	display: none;
-	opacity: 1;
 	padding: 10px;
 }
 
 .tab-body-wrapper {
 	background:$tab-body-wrapper-color;
 	border-top:$tab-checked-border-color $tab-delimiter-line-height solid;
-	border-bottom-right-radius:3px;
+	/*border-bottom-right-radius:3px;
 	border-bottom-left-radius:3px;
-	border-top-right-radius:3px;
+	border-top-right-radius:3px;*/
 	height: calc(100% - 3em);
 	overflow-y: auto;
 	@include breakpoint(small) {

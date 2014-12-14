@@ -4,6 +4,7 @@
 			<table>
 				<thead>
 					<tr>
+						<th></th>
 						<th>Producto</th>
 						<th>Cantidad</th>
 						<th>Valor</th>
@@ -12,8 +13,11 @@
 				<tbody data-bind="foreach: productSales">
 					<tr>
 						<td>
+							<span data-bind="text: product"></span>
+						</td>
+						<td>
 							<!-- ko with: Products.findOne(product) -->
-							<span data-bind="text: $data ? $data.name : product"></span>
+							<span data-bind="text: $data ? $data.name : '[?]'"></span>
 							<!-- /ko -->
 						</td>
 						<td>
