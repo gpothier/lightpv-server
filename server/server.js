@@ -199,7 +199,7 @@ Meteor.methods({
 	getCollectionsVersions: function(clientId, token) {
 		checkClient(clientId, token);
 		return { 
-			"products": getParameter("catalogVersion"),
+			"products": getParameter("productsVersion"),
 			"promotions": getParameter("promotionsVersion") };
 	},
 	
