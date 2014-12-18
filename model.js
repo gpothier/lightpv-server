@@ -94,6 +94,7 @@ ClientEvents = new Mongo.Collection("clientEvents", {
 		price: price of the product at the time the order was taken
 		qty
 	discount: discount percentage
+	promotions: [{promotionId: xxx, timesApplied: xxx, discountValue: xxx}, ...]
 	total: total value of the sale (should match items+discount)
 	slip: number of the sales slip
 	registered: boolean that indicates if the sale has been registered with Prestashop
@@ -130,9 +131,10 @@ Sales = new Mongo.Collection("sales", {
 */
 Parameters = new Mongo.Collection("parameters");
 
-getParameter = function(name) {
+getParameter = function(name, defaultValue) {
+	defaultValue = typeof defaultValue !== "undefined" ? defaultValue : null;
 	var p = Parameters.findOne({name: name});
-	return p ? p.value : null;
+	return p ? p.value : defaultValue;
 };
 
 setParameter = function(name, value) {
@@ -145,3 +147,21 @@ setParameter = function(name, value) {
 		Meteor.call("setParameter", name, value);
 	}
 };
+
+/*
+	Promotion
+	----
+	name: Human-readable name for the promotion.
+	startDate
+	endDate
+	type: type of promotion. The rest of the Promotion document depends on the type, as follows:
+	-- type "mxn": Clients can buy M products for the price of N 
+		productId
+		m
+		n
+	-- type "percentage": A product is discounted by P percent
+		productId
+		p
+*/
+Promotions = new Mongo.Collection("promotions");
+

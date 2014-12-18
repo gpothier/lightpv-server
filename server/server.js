@@ -92,6 +92,22 @@ var checkSale = function(clientId, sale) {
 		var subtotal = item.qty * item.price;
 		total_ref += subtotal;
 	});
+	
+	var promotions_ref = appliedPromotions(sale.timestamp, sale.items);
+	if (promotions_ref.length != sale.promotions.length) throw new Meteor.Error("Number of promotions do not match");
+	
+	for (var i=0;i<promotions_ref.length;i++) {
+		var promo_ref = promotions_ref[i];
+		var promo = sale.promotions[i];
+		if (promo_ref.promotion._id != promo.promotionId) 
+			throw new Meteor.Error("Promotion id mismatch: expected "+promo_ref.promotion._id+", got: "+promo.promotionId);
+		if (promo_ref.timesApplied != promo.timesApplied) 
+			throw new Meteor.Error("Promotion timesApplied mismatch: expected: "+promo_ref.timesApplied+", got: "+promo.timesApplied);
+		if (promo_ref.discountValue != promo.discountValue) 
+			throw new Meteor.Error("Promotion discountValue mismatch: expected: "+promo_ref.discountValue+", got: "+promo.discountValue);
+		total_ref -= promo_ref.discountValue;
+	}
+	
 	total_ref = Math.round(total_ref * (100-sale.discount)/100);
 	if (total_ref != sale.total) throw new Meteor.Error("Invalid sale ["+sale._id+"]: totals do not match: "+sale.total+" != "+total_ref);
 };
@@ -141,7 +157,7 @@ Meteor.methods({
 			
 			var id = user._id;
 			delete user["_id"];
-
+			
 			Meteor.users.update(id, {$set: user}, {upsert: true});
 		}
 		
@@ -158,17 +174,36 @@ Meteor.methods({
 		return Stores.find().fetch();
 	},
 	
-	getCatalog: function() {
-		return {"products": Products.find().fetch(), "version": getParameter("catalogVersion")};
-	},
-	
-	getCatalogVersion: function() {
-		return getParameter("catalogVersion");
-	},
-	
-	forceProductUpdate: function(clientId, token) {
+	forceProductUpdate: function() {
 		LighTPV.updateProducts();
 	},
+	
+	getProductsCollections: function(clientId, token) {
+		checkClient(clientId, token);
+		return {
+			"products": Products.find().fetch(), 
+			"version": getParameter("productsVersion")};
+	},
+	
+	getPromotionsCollection: function(clientId, token) {
+		checkClient(clientId, token);
+		
+		var today = new Date();
+		query = { "startDate": { "$lte": today }, "endDate": { "$gte": today }};
+		
+		return {
+			"promotions": Promotions.find(query).fetch(), 
+			"version": getParameter("promotionsVersion")};		
+	},
+	
+	getCollectionsVersions: function(clientId, token) {
+		checkClient(clientId, token);
+		return { 
+			"products": getParameter("catalogVersion"),
+			"promotions": getParameter("promotionsVersion") };
+	},
+	
+	
 	
 	push: function(clientId, token, storeId, sales, events) {
 		var client = checkClient(clientId, token);
@@ -311,10 +346,9 @@ function downloadProducts() {
 		if (!error && response.statusCode == 200) {
 			parseProducts(body);
 			
-			var catalogVersion = getParameter("catalogVersion");
-			if (! catalogVersion) catalogVersion = 0;
+			var catalogVersion = getParameter("productsVersion", 0);
 			catalogVersion += 1;
-			setParameter("catalogVersion", catalogVersion);
+			setParameter("productsVersion", catalogVersion);
 		} else {
 			console.log("Products download failed");
 		}
