@@ -1,5 +1,6 @@
 #! /bin/sh
 
+date
 set -e
 
 APPDIR=/opt/lightpv-server
