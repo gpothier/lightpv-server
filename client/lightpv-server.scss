@@ -68,6 +68,17 @@ h2 {
 	background-color: #F5EFFB;
 }
 
+input, select {
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	-moz-border-radius: 4px;
+}
+
+input.invalid,
+select.invalid {
+	background-color: pink;
+}
+
 @mixin breakpoint($point) {
 	@if $point == big {
 		@media screen and (max-width: 1600px){@content;}
@@ -131,7 +142,7 @@ $tab-label-height:3em;
 	@include breakpoint(small){margin:0;}
 }
 
-#tab1, #tab2, #tab3 {
+#tab1, #tab2, #tab3, #tab4 {
 	&:checked{
 		+ label {
 			background:$tab-checked-border-color;
@@ -162,7 +173,8 @@ $tab-label-height:3em;
 
 #tab1:checked ~ .tab-body-wrapper #tab-body-1, 
 #tab2:checked ~ .tab-body-wrapper #tab-body-2, 
-#tab3:checked ~ .tab-body-wrapper #tab-body-3 {
+#tab3:checked ~ .tab-body-wrapper #tab-body-3,
+#tab4:checked ~ .tab-body-wrapper #tab-body-4 {
 	position:relative;
 	top: 0;
 	display: block;

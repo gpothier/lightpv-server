@@ -38,7 +38,8 @@ Router.map(function () {
 			return [Meteor.subscribe("stores"), 
 				Meteor.subscribe("clients"), 
 				Meteor.subscribe("products"),
-				Meteor.subscribe("users")];
+				Meteor.subscribe("users"),
+				Meteor.subscribe("promotions")];
 		}
 	});
 });

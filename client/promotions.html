@@ -1,0 +1,86 @@
+<template name="promotions">
+	<div id="promotions-pane">
+		<div class="container">
+			<h4>New promotion</h4>
+			<table>
+				<tr>
+					<td>Name</td>
+					<td><input data-bind="textInput: npName, css: {invalid: ! npNameValid()}" /></td>
+				</tr>
+				<tr>
+					<td>Start date</td>
+					<td><input class="datepicker" data-bind="textInput: _npStartDate, css: {invalid: ! npStartDateValid()}" /></td>
+				</tr>
+				<tr>
+					<td>End Date</td>
+					<td><input class="datepicker" data-bind="textInput: _npEndDate, css: {invalid: ! npEndDateValid()}" /></td>
+				</tr>
+				<tr>
+					<td>Type</td>
+					<td>
+						<select data-bind="options: types, 
+							optionsCaption: 'Type...',
+							value: npType,
+							css: {invalid: ! npTypeValid()}"></select>
+					</td>
+				</tr>
+				<tr>
+					<td>Detail</td>
+					<td>
+						Product: <input class="product-input" data-bind="css: {invalid: ! npProductValid()}" />
+						<span data-bind="text: npProduct"></span>
+						<!-- ko if: npType() == 'mxn' -->
+						<select data-bind="options: ['1', '2', '3', '4', '5'], 
+							optionsCaption: 'M',
+							value: npM,
+							css: {invalid: ! npMValid()}"></select>
+						x 
+						<select data-bind="options: ['1', '2', '3', '4', '5'], 
+							optionsCaption: 'N',
+							value: npN, 
+							css: {invalid: ! npNValid()}"></select>				
+						<!-- /ko -->
+		
+						<!-- ko if: npType() == 'percentage' -->
+						<input data-bind="textInput: npP, css: {invalid: ! npPValid()}" /> %<br/>
+						<!-- /ko -->
+							
+					</td>
+				</tr>
+			</table>
+			<button data-bind="click: createPromotion, enable: canCreatePromotion">Create</button>
+			<h4>Promotions list</h4>
+			<table>
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th>Dates</th>
+						<th>Type</th>
+						<th>Detail</th>
+					</tr>
+				</thead>
+				<tbody data-bind="foreach: promotions">
+					<tr>
+						<td data-bind="text: name"></td>
+						<td>
+							<div data-bind="text: formatDate(startDate)"></div>
+							<div data-bind="text: formatDate(endDate)"></div>
+						</td>
+						<td data-bind="text: type"></td>
+						<td>
+							<!-- ko if: type == 'mxn' -->
+							<div data-bind="text: $parent.productName(productId)"></div>
+							<span data-bind="text: m"></span> x <span data-bind="text: n"></span>
+							<!-- /ko -->
+			
+							<!-- ko if: type == 'percentage' -->
+							<div data-bind="text: productId"></div>
+							<div data-bind="text: p"></div>
+							<!-- /ko -->
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</template>

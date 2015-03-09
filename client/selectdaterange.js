@@ -36,8 +36,14 @@ function SelectDateRangeDialogViewModel() {
 Meteor.startup(function() {
 	selectDateRangeDialogViewModel = new SelectDateRangeDialogViewModel();
 	
-	Template.selectDateRange.rendered = function() {
-		ko.applyBindings(selectDateRangeDialogViewModel, $("#select-date-range-dialog")[0]);
-	};
-});	
+});
+
+Template.selectDateRange.rendered = function() {
+	ko.applyBindings(selectDateRangeDialogViewModel, $("#select-date-range-dialog")[0]);
+	
+	$(".datepicker").datepicker({
+		dateFormat: "yy-mm-dd"
+	});
+	
+};
 

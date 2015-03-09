@@ -50,6 +50,10 @@ Meteor.startup(function () {
 		return ClientEvents.find(query);
 	});
 	
+	Meteor.publish("promotions", function() {
+		return Promotions.find();
+	});
+	
 	if (Meteor.users.find().count() === 0) {
 		console.log("Adding initial admin data");
 		var id = Accounts.createUser({
@@ -203,7 +207,11 @@ Meteor.methods({
 			"promotions": getParameter("promotionsVersion") };
 	},
 	
-	
+	createPromotion: function(promotion) {
+		Promotions.insert(promotion);
+		var v = getParameter("promotionsVersion", 0);
+		setParameter("promotionsVersion", v+1);
+	},
 	
 	push: function(clientId, token, storeId, sales, events) {
 		var client = checkClient(clientId, token);
