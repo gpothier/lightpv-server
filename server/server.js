@@ -100,8 +100,8 @@ var checkSale = function(clientId, sale) {
 	var promotions_ref = appliedPromotions(sale.timestamp, sale.items);
 	if (promotions_ref.length != sale.promotions.length) {
 		console.log("Number of promotions do not match, expected "
-				+JSON.stringfy(promotions_ref)+", got "
-				+JSON.stringfy(sale.promotions));	
+				+JSON.stringify(promotions_ref)+", got "
+				+JSON.stringify(sale.promotions));	
 		throw new Meteor.Error("Number of promotions do not match");
 	} 
 	
