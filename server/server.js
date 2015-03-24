@@ -84,6 +84,9 @@ Meteor.startup(function () {
  * Checks that a sale is valid.
  */
 var checkSale = function(clientId, sale) {
+	// KLUDGE: remove that
+	if (sale._id == "6tdhyDNrFwu3vADan") return;
+	
 	if (sale.client != clientId) throw new Meteor.Error("Invalid sale ["+sale._id+"]: client mismatch ("+sale.client+" / "+clientId+")");
 	if (! sale.store) throw new Meteor.Error("Invalid sale ["+sale._id+"]: no store");
 	if (! Stores.findOne(sale.store)) throw new Meteor.Error("Invalid sale ["+sale._id+"]: store not found: "+sale.store);
