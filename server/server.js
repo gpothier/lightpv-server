@@ -218,13 +218,25 @@ Meteor.methods({
 		delete client["_id"];
 		
 		// Sanity check
-		try {
-			for(var i=0;i<sales.length;i++) checkSale(clientId, sales[i]);
-			for(var i=0;i<events.length;i++) checkEvent(clientId, events[i]);
-		} catch(e) {
-			console.log("Sale or event did not check: ");
-			console.log(e);
-			throw e;
+		for(var i=0;i<sales.length;i++) {
+			var sale = sales[i];
+			try {
+				checkSale(clientId, sale);
+			} catch(e) {
+				console.log("Sale check error: "+JSON.stringify(sale));
+				console.log(e);
+				throw e;
+			}
+		}
+		for(var i=0;i<events.length;i++) {
+			var event = events[i];
+			try {
+				checkEvent(clientId, event);
+			} catch(e) {
+				console.log("Event check error: "+JSON.stringify(event));
+				console.log(e);
+				throw e;
+			}
 		}
 		
 		// Process sales and events in timestamp order
