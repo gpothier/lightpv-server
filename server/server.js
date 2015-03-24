@@ -218,8 +218,14 @@ Meteor.methods({
 		delete client["_id"];
 		
 		// Sanity check
-		for(var i=0;i<sales.length;i++) checkSale(clientId, sales[i]);
-		for(var i=0;i<events.length;i++) checkEvent(clientId, events[i]);
+		try {
+			for(var i=0;i<sales.length;i++) checkSale(clientId, sales[i]);
+			for(var i=0;i<events.length;i++) checkEvent(clientId, events[i]);
+		} catch(e) {
+			console.log("Sale or event did not check: ");
+			console.log(e);
+			throw e;
+		}
 		
 		// Process sales and events in timestamp order
 		var ts = new Date();
