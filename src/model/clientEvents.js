@@ -11,10 +11,9 @@
 	cash: amount of cash of the event
 	errors[]: problems caused by the creation of this event, detected on the client
  */
-ClientEvent = function (doc) {
-	_.extend(this, doc);
-};
-_.extend(ClientEvent.prototype, {
+ClientEvents = new Mongo.Collection("clientEvents");
+
+ClientEvents.helpers({
 	clientObj: function() {
 		if (! this._clientObj) this._clientObj = Clients.findOne(this.clientId);
 		return this._clientObj;
@@ -23,9 +22,4 @@ _.extend(ClientEvent.prototype, {
 		if (! this._userObj) this._userObj = Meteor.users.findOne(this.userId);
 		return this._userObj;
 	}
-
-});
-
-ClientEvents = new Mongo.Collection("clientEvents", {
-	transform: function (doc) { return new ClientEvent(doc); }
 });

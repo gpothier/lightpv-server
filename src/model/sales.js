@@ -16,10 +16,9 @@
 	slip: number of the sales slip
 	registered: boolean that indicates if the sale has been registered with Prestashop
 */
-Sale = function (doc) {
-	_.extend(this, doc);
-};
-_.extend(Sale.prototype, {
+Sales = new Mongo.Collection("sales");
+
+Sales.helpers({
 	clientObj: function() {
 		if (! this._clientObj) this._clientObj = Clients.findOne(this.client);
 		return this._clientObj;
@@ -32,8 +31,4 @@ _.extend(Sale.prototype, {
 		if (! this._userObj) this._userObj = Meteor.users.findOne(this.user);
 		return this._userObj;
 	}
-});
-
-Sales = new Mongo.Collection("sales", {
-	transform: function (doc) { return new Sale(doc); }
 });
