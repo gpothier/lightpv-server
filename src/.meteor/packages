@@ -17,3 +17,4 @@ percolatestudio:percolatestudio-migrations
 fourseven:scss
 
 houston:admin
+dburles:collection-helpers

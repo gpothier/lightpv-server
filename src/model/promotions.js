@@ -1,3 +1,20 @@
+/*
+	Promotion
+	----
+	name: Human-readable name for the promotion.
+	startDate
+	endDate
+	type: type of promotion. The rest of the Promotion document depends on the type, as follows:
+	-- type "mxn": Clients can buy M products for the price of N 
+		productId
+		m
+		n
+	-- type "percentage": A product is discounted by P percent
+		productId
+		p
+*/
+Promotions = new Mongo.Collection("promotions");
+
 /**
  * Applies the given MxN promo to the cart items.
  * Appends the resulting promo application info to the 
