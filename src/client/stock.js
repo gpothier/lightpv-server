@@ -12,13 +12,13 @@ StockViewModel = function() {
 			ko.computed(this.activate, this); // makes subscription reactive
 			return;
 		}
-		SubscriptionManager.Sales(null, null, null, null, this.store(), null);
+		SubscriptionManager.Sales(null, null, null, null, this.store(), null, true);
+		SubscriptionManager.StockUpdates(this.store(), true);
 		SubscriptionManager.StockSummaries(this.store());
-		SubscriptionManager.StockUpdates(this.store());
 	};
 	
 	this.productStock = ko.computed(function() {
-		console.log("Recomputing stock");
+		console.log("Recomputing stock", this.sales().length. this.updates().length);
 		var products = {};		
 		
 		// Account immediate (ie. non-summarized) sales and stock updates
@@ -57,6 +57,8 @@ StockViewModel = function() {
 			});		
 		}
 		
+		console.log("Done recomputing stock");
+
 		return result;
 	}.bind(this));
 	

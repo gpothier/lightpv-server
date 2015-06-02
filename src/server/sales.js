@@ -1,4 +1,4 @@
-Meteor.publish("sales", function (since, until, userId, clientId, storeId, paymentMethod) {
+Meteor.publish("sales", function (since, until, userId, clientId, storeId, paymentMethod, notSummarized) {
 	var query = {};
 	if (userId) query.user = userId;
 	if (clientId) query.client = clientId;
@@ -9,6 +9,7 @@ Meteor.publish("sales", function (since, until, userId, clientId, storeId, payme
 		if (since) query.timestamp["$gte"] = since;
 		if (until) query.timestamp["$lte"] = until;
 	}
+	if (notSummarized) query.summaryId = { $exists: false };
 	return Sales.find(query);
 });
 
