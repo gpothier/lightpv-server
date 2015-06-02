@@ -18,6 +18,7 @@ StockViewModel = function() {
 	};
 	
 	this.productStock = ko.computed(function() {
+		console.log("Recomputing stock");
 		var products = {};		
 		
 		// Account immediate (ie. non-summarized) sales and stock updates
