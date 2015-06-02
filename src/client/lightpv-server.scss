@@ -105,9 +105,9 @@ $tab-label-height:3em;
 .tabs-wrapper {
 	position: absolute;
 	right: 0;
-	top: 4em;
+	top: 0.5em;
 	width: 75%;
-	height: calc(100% - 4em);
+	height: calc(100% - 0.5em);
 	input[type=radio] {
 		display:none;
 	}
@@ -142,7 +142,7 @@ $tab-label-height:3em;
 	@include breakpoint(small){margin:0;}
 }
 
-#tab1, #tab2, #tab3, #tab4 {
+#tab1, #tab2, #tab3, #tab4, #tab5, #tab6  {
 	&:checked{
 		+ label {
 			background:$tab-checked-border-color;
@@ -174,7 +174,9 @@ $tab-label-height:3em;
 #tab1:checked ~ .tab-body-wrapper #tab-body-1, 
 #tab2:checked ~ .tab-body-wrapper #tab-body-2, 
 #tab3:checked ~ .tab-body-wrapper #tab-body-3,
-#tab4:checked ~ .tab-body-wrapper #tab-body-4 {
+#tab4:checked ~ .tab-body-wrapper #tab-body-4,
+#tab5:checked ~ .tab-body-wrapper #tab-body-5,
+#tab6:checked ~ .tab-body-wrapper #tab-body-6 {
 	position:relative;
 	top: 0;
 	display: block;

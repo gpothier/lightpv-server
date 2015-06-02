@@ -1,4 +1,4 @@
-Meteor.publish("events", function(since, until) {
+Meteor.publish("clientEvents", function(since, until) {
 	var query = {};
 	if (since || until) {
 		query.timestamp = {};
@@ -11,6 +11,6 @@ Meteor.publish("events", function(since, until) {
 /*
  * Checks that a ClientEvent is valid.
  */
-var checkEvent = function(clientId, event) {
+LighTPV.checkEvent = function(clientId, event) {
 	if (event.clientId != clientId) throw new Meteor.Error("Invalid event ["+event._id+"]: client mismatch ("+event.client+" / "+clientId+")");
 };

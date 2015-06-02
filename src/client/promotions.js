@@ -1,7 +1,17 @@
-function PromotionsViewModel() {
+PromotionsViewModel = function() {
 	this.types = ["mxn", "percentage"];
 	
 	this.promotions = mko.collectionObservable(Promotions, {}, {sort: {startDate: -1}});
+	
+	this.activated = null;
+	this.activate = function() {
+		if (! this.activated) {
+			this.activated = true;
+			ko.computed(this.activate, this); // makes subscription reactive
+			return;
+		}
+		SubscriptionManager.Promotions();
+	};
 	
 	this.npName = ko.observable();
 	this._npStartDate = ko.observable();
@@ -139,14 +149,11 @@ function PromotionsViewModel() {
 }
 
 Template.promotions.rendered = function() {
-	var view = new PromotionsViewModel();
-	ko.applyBindings(view, $("#promotions-pane")[0]);
-	
 	$(".datepicker").datepicker({
 		dateFormat: "yy-mm-dd"
 	});
 	
-	$(".product-input").autocomplete({
+	/*$(".product-input").autocomplete({
 		source: view.productAutocompleteFilter,
 		select: function(event, ui) {
 			var id = ui.item.value;
@@ -154,6 +161,6 @@ Template.promotions.rendered = function() {
 			event.preventDefault();
 			$(event.target).val(ui.item.label);
 		}
-	});
+	});*/
 };
 

@@ -17,7 +17,7 @@ Meteor.startup(function () {
 
 Meteor.methods({
 	updateUsers: function(clientId, token, users) {
-		var client = checkClient(clientId, token);
+		var client = LighTPV.checkClient(clientId, token);
 		for(var i=0;i<users.length;i++) {
 			var user = users[i];
 			if (Roles.userIsInRole(user, "admin")) throw new Meteor.Error("Attempting to add admin user");

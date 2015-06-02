@@ -11,7 +11,7 @@ Meteor.methods({
 	},
 	
 	getProductsCollections: function(clientId, token) {
-		checkClient(clientId, token);
+		LighTPV.checkClient(clientId, token);
 		return {
 			"products": Products.find().fetch(), 
 			"version": getParameter("productsVersion")};

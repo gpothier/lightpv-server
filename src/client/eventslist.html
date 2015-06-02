@@ -1,5 +1,9 @@
 <template name="eventslist">
 	<div id="eventslist-pane">
+		<div class="header">
+			<lt-filter-time params="value: dateRange"></lt-filter-time>
+		</div>
+		
 		<div class="container">
 			<table class="list">
 				<tr>
@@ -10,30 +14,32 @@
 					<th>Cash</th>
 					<th>Errores</th>
 				</tr>
-				{{#each events}}
+				<!-- ko foreach: events -->
 				<tr class="event">
 					<td class="client">
-						<span>{{clientObj.hostname}}</span>
+						<span data-bind="text: clientObj.hostname"></span>
 					</td>
 					<td class="timestamp">
-						<span>{{formatDate timestamp "long"}}</span>
+						<span data-bind="text: timestamp"></span>
 					</td>
 					<td class="user">
-						<span>{{userObj.username}}</span>
+						<span data-bind="text: userObj.username"></span>
 					</td>
 					<td class="event">
-						<span>{{event}}</span>
+						<span data-bind="text: event"></span>
 					</td>
 					<td class="cash">
-						<span>${{cash}}</span>
+						$<span data-bind="text: cash"></span>
 					</td>
 					<td class="errors">
-						{{#each errors}}
-						<div>{{this}}</div>
-						{{/each}}
+						<!-- ko if: typeof(errors) !== 'undefined' -->
+						<!-- ko foreach: errors -->
+						<div data-bind="text: $data"></div>
+						<!-- /ko -->
+						<!-- /ko -->
 					</td>
 				</tr>
-				{{/each}}
+				<!-- /ko -->
 			</table>
 		</div>
 	</div>

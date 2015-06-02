@@ -10,7 +10,7 @@
 		product: product id
 		qty
 */
-StockUpdates = new Mongo.Collection("stockUpdate");
+StockUpdates = new Mongo.Collection("stockUpdates");
 
 StockUpdates.helpers({
 	clientObj: function() {
@@ -26,3 +26,12 @@ StockUpdates.helpers({
 		return this._userObj;
 	}
 });
+
+/*
+ * Checks that a stock update is valid.
+ */
+LighTPV.checkStockUpdate = function(clientId, stockUpdate) {
+	if (stockUpdate.client != clientId) throw new Meteor.Error("Invalid stockUpdate ["+sale._id+"]: client mismatch ("+stockUpdate.client+" / "+clientId+")");
+	if (! stockUpdate.store) throw new Meteor.Error("Invalid stockUpdate ["+stockUpdate._id+"]: no store");
+	if (! Stores.findOne(stockUpdate.store)) throw new Meteor.Error("Invalid stockUpdate ["+stockUpdate._id+"]: store not found: "+stockUpdate.store);
+};

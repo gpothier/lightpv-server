@@ -15,7 +15,7 @@ Meteor.publish("sales", function (since, until, userId, clientId, storeId, payme
 /*
  * Checks that a sale is valid.
  */
-var checkSale = function(clientId, sale) {
+LighTPV.checkSale = function(clientId, sale) {
 	if (sale.client != clientId) throw new Meteor.Error("Invalid sale ["+sale._id+"]: client mismatch ("+sale.client+" / "+clientId+")");
 	if (! sale.store) throw new Meteor.Error("Invalid sale ["+sale._id+"]: no store");
 	if (! Stores.findOne(sale.store)) throw new Meteor.Error("Invalid sale ["+sale._id+"]: store not found: "+sale.store);
@@ -31,7 +31,7 @@ var checkSale = function(clientId, sale) {
 	
 	var promotions_ref = appliedPromotions(sale.timestamp, sale.items);
 	if (promotions_ref.length != sale.promotions.length) {
-		console.log("Number of promotions do not match, expected "
+		logger.warn("Number of promotions do not match, expected "
 				+JSON.stringify(promotions_ref)+", got "
 				+JSON.stringify(sale.promotions));	
 		throw new Meteor.Error("Number of promotions do not match");
@@ -52,3 +52,4 @@ var checkSale = function(clientId, sale) {
 	total_ref = Math.round(total_ref * (100-sale.discount)/100);
 	if (total_ref != sale.total) throw new Meteor.Error("Invalid sale ["+sale._id+"]: totals do not match: "+sale.total+" != "+total_ref);
 };
+

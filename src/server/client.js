@@ -27,11 +27,11 @@ Meteor.methods({
 	},
 });
 
-function checkClient(clientId, token) {
+LighTPV.checkClient = function(clientId, token) {
 	var clients = Clients.find(clientId); 
 	if (clients.count() == 1) {
 		var client = clients.fetch()[0];
 		if (client.token == token) return client;
 	} 
 	throw new Meteor.Error("Authentication error");
-}
+};

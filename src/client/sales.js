@@ -1,19 +1,28 @@
-Meteor.startup(function() {
-	Meteor.autorun(function() {
-		var filter_date = Session.get("filter_date");
-		
-		if (filter_date) Meteor.subscribe("sales",
-			filter_date[0],
-			filter_date[1], 
-			Session.get("filter_userId"), 
-			Session.get("filter_clientId"), 
-			Session.get("filter_storeId"), 
-			Session.get("filter_paymentMethod"));
-	});
-});
-
-function SalesViewModel() {
+SalesViewModel = function() {
 	this.sales = mko.collectionObservable(Sales, {}, {sort: {timestamp: -1}});
+	
+	this.dateRange = ko.observable();
+	this.store = ko.observable();
+	this.user = ko.observable();
+	this.paymentMethod = ko.observable();
+	
+	this.activated = null;
+	this.activate = function() {
+		if (! this.activated) {
+			this.activated = true;
+			ko.computed(this.activate, this); // makes subscription reactive
+			return;
+		}
+		if (this.dateRange()) SubscriptionManager.Sales(
+				this.dateRange()[0],
+				this.dateRange()[1], 
+				this.user(), 
+				null, 
+				this.store(), 
+				this.paymentMethod());
+	};
+	
+	
 	
 	this.filterTotal = ko.computed(function() {
 		var total = 0;
@@ -25,11 +34,6 @@ function SalesViewModel() {
 		showSaleDetails(sale);
 	}.bind(this);
 }
-
-Template.sales.rendered = function() {
-	var view = new SalesViewModel();
-	ko.applyBindings(view, $("#sales-pane")[0]);
-};
 
 
 // Show sale details

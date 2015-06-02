@@ -1,0 +1,2 @@
+LighTPV = {};
+LighTPV.config = {};

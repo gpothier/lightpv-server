@@ -5,21 +5,21 @@ Meteor.startup(function () {
 
 Meteor.methods({
 	getCollectionsVersions: function(clientId, token) {
-		checkClient(clientId, token);
+		LighTPV.checkClient(clientId, token);
 		return { 
 			"products": getParameter("productsVersion"),
 			"promotions": getParameter("promotionsVersion") };
 	},
 	
-	push: function(clientId, token, storeId, sales, events) {
-		var client = checkClient(clientId, token);
+	push: function(clientId, token, storeId, sales, events, stockUpdates) {
+		var client = LighTPV.checkClient(clientId, token);
 		delete client["_id"];
 		
 		// Sanity check
 		for(var i=0;i<sales.length;i++) {
 			var sale = sales[i];
 			try {
-				checkSale(clientId, sale);
+				LighTPV.checkSale(clientId, sale);
 			} catch(e) {
 				console.log("Sale check error: "+JSON.stringify(sale));
 				console.log(e);
@@ -29,13 +29,24 @@ Meteor.methods({
 		for(var i=0;i<events.length;i++) {
 			var event = events[i];
 			try {
-				checkEvent(clientId, event);
+				LighTPV.checkEvent(clientId, event);
 			} catch(e) {
 				console.log("Event check error: "+JSON.stringify(event));
 				console.log(e);
 				throw e;
 			}
 		}
+		for(var i=0;i<stockUpdates.length;i++) {
+			var stockUpdate = stockUpdates[i];
+			try {
+				LighTPV.checkStockUpdate(clientId, stockUpdate);
+			} catch(e) {
+				console.log("StockUpdate check error: "+JSON.stringify(stockUpdate));
+				console.log(e);
+				throw e;
+			}
+		}
+
 		
 		// Process sales and events in timestamp order
 		var ts = new Date();
@@ -144,9 +155,26 @@ Meteor.methods({
 			console.log("Error while inserting sales: "+e);
 		}
 		
+		var pushedStockUpdates = [];
+		
+		try {
+			for(var i=0;i<stockUpdates.length;i++) {
+				var stockUpdate = stockUpdates[i];
+				
+				console.log("Adding stock update: "+JSON.stringify(stockUpdate));
+				
+				stockUpdate.serverTimestamp = ts;
+				StockUpdates.insert(stockUpdate);
+				pushedStockUpdates.push(stockUpdate._id);
+			}
+		} catch(e) {
+			console.log("Error while inserting stock updates: "+e);
+		}
+		
+		
 		Clients.update(clientId, {$set: {lastActivity: ts, store: storeId}});
 			
-		return {sales: pushedSales, events: pushedEvents};
+		return {sales: pushedSales, events: pushedEvents, stockUpdates: pushedStockUpdates};
 	}
 });
 

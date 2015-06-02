@@ -1,4 +1,4 @@
-/*
+/**
 	Sale
 	----
 	store: store id
@@ -15,6 +15,7 @@
 	total: total value of the sale (should match items+discount)
 	slip: number of the sales slip
 	registered: boolean that indicates if the sale has been registered with Prestashop
+	summary: id of the StockSummaries document that accounted this sale
 */
 Sales = new Mongo.Collection("sales");
 
@@ -32,3 +33,4 @@ Sales.helpers({
 		return this._userObj;
 	}
 });
+

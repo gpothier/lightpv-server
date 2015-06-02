@@ -4,7 +4,7 @@ Meteor.publish("promotions", function() {
 
 Meteor.methods({
 	getPromotionsCollection: function(clientId, token) {
-		checkClient(clientId, token);
+		LighTPV.checkClient(clientId, token);
 		
 		var today = new Date();
 		query = { "startDate": { "$lte": today }, "endDate": { "$gte": today }};

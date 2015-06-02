@@ -11,7 +11,7 @@ Meteor.startup(function () {
 
 Meteor.methods({
 	getStores: function(clientId, token) {
-		var client = checkClient(clientId, token);
+		var client = LighTPV.checkClient(clientId, token);
 		return Stores.find().fetch();
 	},
 });

@@ -1,6 +1,3 @@
-Meteor.startup(function() {
-	Meteor.subscribe("clients", null);
-});
 
 Template.clientslist.helpers({
 	clients: function () {

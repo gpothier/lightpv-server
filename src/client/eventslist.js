@@ -1,12 +1,17 @@
-Meteor.startup(function() {
-	Meteor.autorun(function() {
-		var filter_date = Session.get("filter_date");
-		if (filter_date) Meteor.subscribe("events", filter_date[0], filter_date[1]);
-	});
-});
-
-Template.eventslist.helpers({
-	events: function() {
-		return ClientEvents.find({}, {sort: {timestamp: -1}});
-	}
-});
+EventsViewModel = function() {
+	this.events = mko.collectionObservable(ClientEvents, {}, {sort: {timestamp: -1}});
+	
+	this.dateRange = ko.observable();
+	
+	this.activated = null;
+	this.activate = function() {
+		if (! this.activated) {
+			this.activated = true;
+			ko.computed(this.activate, this); // makes subscription reactive
+			return;
+		}
+		if (this.dateRange()) SubscriptionManager.ClientEvents(
+				this.dateRange()[0],
+				this.dateRange()[1]);
+	};
+};

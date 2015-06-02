@@ -1,8 +1,14 @@
 <template name="sales">
 	<div id="sales-pane">
+	
 		<div class="header">
+			<lt-filter-time params="value: dateRange"></lt-filter-time>
+			<lt-filter-store params="value: store"></lt-filter-store>
+			<lt-filter-user params="value: user"></lt-filter-user>
+			<lt-filter-payment-method params="value: paymentMethod"></lt-filter-payment-method>
 			<h2>Total: $<span data-bind="text: filterTotal"></span></h2>
 		</div>
+		
 		<div class="container">
 			<table class="list">
 				<tr>

@@ -1,10 +1,7 @@
-<template name="productSales">
-	<div id="productsales-pane">
+<template name="stock">
+	<div id="stock-pane">
 		<div class="header">
-			<lt-filter-time params="value: dateRange"></lt-filter-time>
 			<lt-filter-store params="value: store"></lt-filter-store>
-			<lt-filter-user params="value: user"></lt-filter-user>
-			<lt-filter-payment-method params="value: paymentMethod"></lt-filter-payment-method>
 		</div>
 		
 		<div class="container">
@@ -13,11 +10,12 @@
 					<tr>
 						<th></th>
 						<th>Producto</th>
-						<th>Cantidad</th>
-						<th>Valor</th>
+						<th>Cantidad vendida</th>
+						<th>Cantidad recibida</th>
+						<th>Stock</th>
 					</tr>
 				</thead>
-				<tbody data-bind="foreach: productSales">
+				<tbody data-bind="foreach: productStock">
 					<tr>
 						<td>
 							<span data-bind="text: product"></span>
@@ -28,10 +26,13 @@
 							<!-- /ko -->
 						</td>
 						<td>
-							<span data-bind="text: qty"></span>
+							<span data-bind="text: soldQty"></span>
 						</td>
 						<td>
-							$<span data-bind="text: total"></span>
+							<span data-bind="text: receivedQty"></span>
+						</td>
+						<td>
+							<span data-bind="text: receivedQty-soldQty"></span>
 						</td>
 					</tr>
 				</tbody>
