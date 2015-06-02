@@ -1,7 +1,7 @@
 StockViewModel = function() {
 	this.summaries = mko.collectionObservable(StockSummaries, {}, {sort: {timestamp: -1}});
-	this.sales = mko.collectionObservable(Sales);
-	this.updates = mko.collectionObservable(StockUpdates);
+	this.sales = mko.collectionObservable(Sales, {});
+	this.updates = mko.collectionObservable(StockUpdates, {});
 	
 	this.store = ko.observable();
 	
