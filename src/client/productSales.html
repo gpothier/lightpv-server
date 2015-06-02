@@ -1,10 +1,10 @@
 <template name="productSales">
 	<div id="productsales-pane">
 		<div class="header">
-			<lt-filter-time params="value: dateRange"></lt-filter-time>
-			<lt-filter-store params="value: store"></lt-filter-store>
-			<lt-filter-user params="value: user"></lt-filter-user>
-			<lt-filter-payment-method params="value: paymentMethod"></lt-filter-payment-method>
+			<lt-filter-time params="value: dateRange, allowNull: false"></lt-filter-time>
+			<lt-filter-store params="value: store, allowNull: true"></lt-filter-store>
+			<lt-filter-user params="value: user, allowNull: true"></lt-filter-user>
+			<lt-filter-payment-method params="value: paymentMethod, allowNull: true"></lt-filter-payment-method>
 		</div>
 		
 		<div class="container">

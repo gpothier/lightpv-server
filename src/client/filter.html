@@ -2,14 +2,14 @@
 	<div id="lt-filter-time" style="display: none;">
 		Hora: <select data-bind="options: dateRanges, 
 					optionsText: 'name',
-					optionsCaption: 'Todos',
+					optionsCaption: allowNull ? 'Todos' : null,
 					value: dateRange"></select>
 	</div>
 	
 	<div id="lt-filter-store" style="display: none;">
 		Tienda: <select data-bind="options: stores, 
 					optionsText: 'name',
-					optionsCaption: 'Todos',
+					optionsCaption: allowNull ? 'Todos' : null,
 					optionsValue: '_id',
 					value: store"></select>
 	</div>
@@ -17,14 +17,14 @@
 	<div id="lt-filter-user" style="display: none;">
 		Usuario: <select data-bind="options: users, 
 					optionsText: 'username',
-					optionsCaption: 'Todos',
+					optionsCaption: allowNull ? 'Todos' : null,
 					optionsValue: '_id',
 					value: user"></select>
 	</div>
 	
 	<div id="lt-filter-payment-method" style="display: none;">
 		Forma pago: <select data-bind="options: paymentMethods, 
-					optionsCaption: 'Todos',
+					optionsCaption: allowNull ? 'Todos' : null,
 					value: paymentMethod"></select>
 	</div>
 </template>

@@ -1,12 +1,14 @@
 ko.components.register("lt-filter-time", {
 	template: { element: "lt-filter-time" },
 	viewModel: function FilterViewModel(params) {
+		this.allowNull = params.allowNull;
+		
 		this.dateRanges = [
 			{name: "Today", value: "today"}, 
 			{name: "This month", value: "thisMonth"},
 			{name: "Range", value: "range"}];
 		this.dateRange = ko.observable(this.dateRanges[0]);
-	   	
+		
 		this._dateRangeListener = ko.computed(function() {
 			var since = null;
 			var until = null;
@@ -41,6 +43,7 @@ ko.components.register("lt-filter-time", {
 ko.components.register("lt-filter-store", {
 	template: { element: "lt-filter-store" },
 	viewModel: function FilterViewModel(params) {
+		this.allowNull = params.allowNull;
 	   	this.stores = mko.collectionObservable(Stores, {});
 	   	this.store = params.value;
 	}
@@ -49,6 +52,7 @@ ko.components.register("lt-filter-store", {
 ko.components.register("lt-filter-user", {
 	template: { element: "lt-filter-user" },
 	viewModel: function FilterViewModel(params) {
+		this.allowNull = params.allowNull;
 		this.users = mko.collectionObservable(Meteor.users, {});
 		this.user = params.value;
 	}
@@ -57,6 +61,7 @@ ko.components.register("lt-filter-user", {
 ko.components.register("lt-filter-payment-method", {
 	template: { element: "lt-filter-payment-method" },
 	viewModel: function FilterViewModel(params) {
+		this.allowNull = params.allowNull;
 		this.paymentMethods = ["card", "cash"];
 		this.paymentMethod = params.value;
 	}
