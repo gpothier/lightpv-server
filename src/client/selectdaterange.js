@@ -1,7 +1,16 @@
 // Select date range
-selectDateRangeDialog = function() {
-	selectDateRangeDialogViewModel.since(null);
-	selectDateRangeDialogViewModel.until(null);
+selectDateRangeDialog = function(value) {
+	selectDateRangeDialogViewModel.value = value;
+	
+	var since = null;
+	var until = null;
+	var v = value();
+	if (v) {
+		since = moment(v[0]).format("YYYY-MM-DD");
+		until = moment(v[1]).format("YYYY-MM-DD");
+	}
+	selectDateRangeDialogViewModel.since(since);
+	selectDateRangeDialogViewModel.until(until);
 	
 	AntiModals.overlay("selectDateRange", {
 		modal: true,
@@ -24,8 +33,8 @@ function SelectDateRangeDialogViewModel() {
 		since.setHours(0, 0, 0, 0);
 		until.setHours(23, 59, 59, 999);
 
-		Session.set("filter_date", [since, until]);
-		AntiModals.dismissOverlay($("#select-date-range-dialog"), null, null); 
+		AntiModals.dismissOverlay($("#select-date-range-dialog"), null, null);
+		this.value([since, until]);
 	}.bind(this);
 	
 	this.cancel = function() {

@@ -9,11 +9,10 @@ ko.components.register("lt-filter-time", {
 			{name: "Range", value: "range"}];
 		this.dateRange = ko.observable(this.dateRanges[0]);
 		
-		this._dateRangeListener = ko.computed(function() {
+		function updateRange(dateRange) {
 			var since = null;
 			var until = null;
-			var dateRange = this.dateRange();
-	   		
+			
 			if (dateRange) {
 				if (dateRange.value == "today") {
 					since = new Date();
@@ -29,14 +28,16 @@ ko.components.register("lt-filter-time", {
 					until.setDate(0);
 					until.setHours(23, 59, 59, 999);
 				} else if (dateRange.value == "range") {
-					selectDateRangeDialog();
+					selectDateRangeDialog(params.value);
 					return;
 				}
 			}
 			
-			console.log("Since: "+since+", until: "+until);
 			params.value([since, until]); 
-		}.bind(this));
+		};
+		
+		this.dateRange.subscribe(updateRange);
+		updateRange(this.dateRange());
 	}
 });
 
