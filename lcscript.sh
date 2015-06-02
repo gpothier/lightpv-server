@@ -98,7 +98,7 @@ case $CMD in
 		echo "Pulling..."
 		git pull
 		
-		cd $APPDIR/src/meteor
+		cd $APPDIR/src
 		
 		echo "Building..."
 		meteor build $APPWORKDIR --directory
