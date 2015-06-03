@@ -52,8 +52,8 @@ StockViewModel = function() {
 		for(var product in products) {
 			result.push({
 				product: product,
-				soldQty: soldQtys[product],
-				receivedQty: receivedQtys[product]
+				soldQty: soldQtys[product] || 0,
+				receivedQty: receivedQtys[product] || 0
 			});		
 		}
 		
