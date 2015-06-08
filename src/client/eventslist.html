@@ -17,13 +17,13 @@
 				<!-- ko foreach: events -->
 				<tr class="event">
 					<td class="client">
-						<span data-bind="text: clientObj.hostname"></span>
+						<span data-bind="text: clientObj() ? clientObj().hostname : clientId"></span>
 					</td>
 					<td class="timestamp">
 						<span data-bind="text: timestamp"></span>
 					</td>
 					<td class="user">
-						<span data-bind="text: userObj.username"></span>
+						<span data-bind="text: userObj() ? userObj().username : userId"></span>
 					</td>
 					<td class="event">
 						<span data-bind="text: event"></span>
