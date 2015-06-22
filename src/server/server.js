@@ -78,17 +78,56 @@ Meteor.methods({
 				else return popEvent();
 			}
 			
+			function compareObj(o1, o2) {
+				o1 = JSON.parse(JSON.stringify(o1));
+				o2 = JSON.parse(JSON.stringify(o2));
+				
+				delete o1["serverTimestamp"];
+				delete o2["serverTimestamp"];
+				delete o1["summaryId"];
+				delete o2["summaryId"];
+				
+				return deepCompare(o1, o2);
+			}
+			
+			// Saves a sale or event and returns true if it was indeed saved,
+			// false otherwise (this can occur if the client did not
+			// receive the pushed notification and sends the object again).
+			function saveObj(coll, obj) {
+				try {
+					coll.insert(obj);
+					return true;
+				} catch(e) {
+					if (e.code == 11000) {
+						// Duplicate key
+						var original = coll.findOne(obj._id);
+						if (compareObj(original, obj)) {
+							console.log("Ignored duplicate obj ("+obj._id+")");
+							return false;
+						} else {
+							console.log("Original obj", original);
+							console.log("New obj", obj);
+						}
+					} 
+					throw e;
+				}
+				
+			}
+			
 			// Process sale
 			function pushSale(sale) {
 				console.log("Adding sale: "+JSON.stringify(sale));
 				
 				sale.serverTimestamp = ts;
-				Sales.insert(sale);
 				
-				if (sale.paymentMethod == "cash") {
-					client.currentCash += sale.total;
-					Clients.update(clientId, {$set: {currentCash: client.currentCash}});
-					console.log("    New client state: "+JSON.stringify(client));
+				var saved = saveObj(Sales, sale);
+				
+				if (saved) {
+					if (sale.paymentMethod == "cash") {
+						client.currentCash += sale.total;
+						Clients.update(clientId, {$set: {currentCash: client.currentCash}});
+						console.log("    New client state: "+JSON.stringify(client));
+					}
 				}
 				
 				pushedSales.push(sale._id);
@@ -129,13 +168,17 @@ Meteor.methods({
 					event.errors = errors;
 					console.log("    Event errors: "+JSON.stringify(errors));
 				}
-				Clients.update(clientId, {$set: {
-					currentUser: client.currentUser, 
-					currentCash: client.currentCash,
-					accumulatedCashDelta: client.accumulatedCashDelta}});
-				ClientEvents.insert(event);
 				
-				console.log("    New client state("+clientId+"): "+JSON.stringify(client));
+				var saved = saveObj(ClientEvents, event);
+				
+				if (saved) {
+					Clients.update(clientId, {$set: {
+						currentUser: client.currentUser, 
+						currentCash: client.currentCash,
+						accumulatedCashDelta: client.accumulatedCashDelta}});
+					
+					console.log("    New client state("+clientId+"): "+JSON.stringify(client));
+				}
 				
 				pushedEvents.push(event._id);
 			}
