@@ -105,8 +105,11 @@ Meteor.methods({
 							console.log("Ignored duplicate obj ("+obj._id+")");
 							return false;
 						} else {
+							console.log("WARNING: Duplicate obj")
 							console.log("Original obj", original);
 							console.log("New obj", obj);
+							coll.update(obj._id, { $push: { newObj: obj } });
+							return false;
 						}
 					} 
 					throw e;
