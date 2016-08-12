@@ -37,6 +37,8 @@ function downloadProducts() {
 			var catalogVersion = getParameter("productsVersion", 0);
 			catalogVersion += 1;
 			setParameter("productsVersion", catalogVersion);
+			
+			console.log("New product catalog version: ", catalogVersion);
 		} else {
 			console.log("Products download failed");
 		}
