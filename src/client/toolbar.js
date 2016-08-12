@@ -1,6 +1,6 @@
 Template.toolbar.helpers({
-	catalogVersion: function () {
-		return getParameter("catalogVersion");
+	productsVersion: function () {
+		return getParameter("productsVersion");
 	},
 	promotionsVersion: function () {
 		return getParameter("promotionsVersion");
